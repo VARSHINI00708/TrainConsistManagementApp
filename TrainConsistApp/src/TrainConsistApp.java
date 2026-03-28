@@ -65,15 +65,13 @@ public class TrainConsistApp {
         System.out.println("Program continues...\n");
     }
 
-    // ========== USE CASE 4: Ordered Train using LinkedList ==========
+    // ========== USE CASE 4 ==========
     public static void useCase4() {
 
         System.out.println("=== UC4: Ordered Train Consist (LinkedList) ===");
 
-        // Create LinkedList
         LinkedList<String> train = new LinkedList<>();
 
-        // Add bogies
         train.add("Engine");
         train.add("Sleeper");
         train.add("AC");
@@ -83,13 +81,11 @@ public class TrainConsistApp {
         System.out.println("Initial Train:");
         System.out.println(train);
 
-        // Insert Pantry Car at position 2
         train.add(2, "Pantry");
 
         System.out.println("After adding Pantry at position 2:");
         System.out.println(train);
 
-        // Remove first and last bogie
         train.removeFirst();
         train.removeLast();
 
@@ -102,10 +98,37 @@ public class TrainConsistApp {
         System.out.println("Program continues...\n");
     }
 
+    // ========== USE CASE 5: LinkedHashSet ==========
+    public static void useCase5() {
+
+        System.out.println("=== UC5: Train Formation using LinkedHashSet ===");
+
+        // Create LinkedHashSet (order + uniqueness)
+        Set<String> trainFormation = new LinkedHashSet<>();
+
+        // Add bogies
+        trainFormation.add("Engine");
+        trainFormation.add("Sleeper");
+        trainFormation.add("Cargo");
+        trainFormation.add("Guard");
+
+        // Attempt duplicate
+        trainFormation.add("Sleeper"); // ignored automatically
+
+        // Display final formation
+        System.out.println("Final Train Formation (Insertion Order Preserved):");
+        System.out.println(trainFormation);
+
+        System.out.println("Total bogies: " + trainFormation.size());
+
+        System.out.println("Program continues...\n");
+    }
+
     public static void main(String[] args) {
         useCase1();
         useCase2();
         useCase3();
-        useCase4(); // Added UC4
+        useCase4();
+        useCase5(); // Added UC5
     }
 }
