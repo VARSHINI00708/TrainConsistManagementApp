@@ -20,40 +20,57 @@ public class TrainConsistApp {
 
         System.out.println("=== UC2: Passenger Bogie Management ===");
 
-        // Create ArrayList for passenger bogies
         List<String> passengerBogies = new ArrayList<>();
 
-        // Add bogies
         passengerBogies.add("Sleeper");
         passengerBogies.add("AC Chair");
         passengerBogies.add("First Class");
 
-        // Display after insertion
         System.out.println("Bogies after addition:");
         System.out.println(passengerBogies);
 
-        // Remove one bogie
         passengerBogies.remove("AC Chair");
 
         System.out.println("After removing AC Chair:");
         System.out.println(passengerBogies);
 
-        // Check existence
         if (passengerBogies.contains("Sleeper")) {
             System.out.println("Sleeper bogie exists in the train.");
-        } else {
-            System.out.println("Sleeper bogie not found.");
         }
 
-        // Final state
         System.out.println("Final bogie list:");
         System.out.println(passengerBogies);
 
         System.out.println("Program continues...\n");
     }
 
+    // ========== USE CASE 3: Unique Bogie IDs using HashSet ==========
+    public static void useCase3() {
+
+        System.out.println("=== UC3: Unique Bogie ID Tracking ===");
+
+        // Create HashSet for unique bogie IDs
+        Set<String> bogieIds = new HashSet<>();
+
+        // Add IDs (including duplicates)
+        bogieIds.add("BG101");
+        bogieIds.add("BG102");
+        bogieIds.add("BG103");
+        bogieIds.add("BG101"); // duplicate
+        bogieIds.add("BG102"); // duplicate
+
+        // Display unique IDs
+        System.out.println("Unique Bogie IDs:");
+        System.out.println(bogieIds);
+
+        System.out.println("Total unique bogies: " + bogieIds.size());
+
+        System.out.println("Program continues...\n");
+    }
+
     public static void main(String[] args) {
         useCase1();
-        useCase2(); // Added UC2
+        useCase2();
+        useCase3(); // Added UC3
     }
 }
