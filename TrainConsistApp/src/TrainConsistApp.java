@@ -2,6 +2,22 @@ import java.util.*;
 
 public class TrainConsistApp {
 
+    // ========== Bogie Class (Used in UC7) ==========
+    static class Bogie {
+        String name;
+        int capacity;
+
+        Bogie(String name, int capacity) {
+            this.name = name;
+            this.capacity = capacity;
+        }
+
+        @Override
+        public String toString() {
+            return name + " (Capacity: " + capacity + ")";
+        }
+    }
+
     // ========== USE CASE 1 ==========
     public static void useCase1() {
         System.out.println("=== Train Consist Management App ===");
@@ -109,25 +125,44 @@ public class TrainConsistApp {
         System.out.println("Program continues...\n");
     }
 
-    // ========== USE CASE 6: HashMap ==========
+    // ========== USE CASE 6 ==========
     public static void useCase6() {
-
         System.out.println("=== UC6: Bogie Capacity Mapping ===");
 
-        // Create HashMap
         Map<String, Integer> bogieCapacity = new HashMap<>();
 
-        // Add bogie-capacity pairs
         bogieCapacity.put("Sleeper", 72);
         bogieCapacity.put("AC Chair", 50);
         bogieCapacity.put("First Class", 24);
 
-        // Display all entries
         System.out.println("Bogie Capacity Details:");
-
         for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
             System.out.println(entry.getKey() + " -> Capacity: " + entry.getValue());
         }
+
+        System.out.println("Program continues...\n");
+    }
+
+    // ========== USE CASE 7: Comparator Sorting ==========
+    public static void useCase7() {
+
+        System.out.println("=== UC7: Sort Bogies by Capacity ===");
+
+        // Create list of Bogie objects
+        List<Bogie> bogies = new ArrayList<>();
+
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("First Class", 24));
+
+        System.out.println("Before Sorting:");
+        System.out.println(bogies);
+
+        // Sort using Comparator (ascending by capacity)
+        bogies.sort(Comparator.comparingInt(b -> b.capacity));
+
+        System.out.println("After Sorting (Ascending Capacity):");
+        System.out.println(bogies);
 
         System.out.println("Program continues...\n");
     }
@@ -138,6 +173,7 @@ public class TrainConsistApp {
         useCase3();
         useCase4();
         useCase5();
-        useCase6(); // Added UC6
+        useCase6();
+        useCase7(); // Final UC
     }
 }
