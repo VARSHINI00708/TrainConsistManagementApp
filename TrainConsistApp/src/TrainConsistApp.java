@@ -4,20 +4,17 @@ public class TrainConsistApp {
 
     // ========== USE CASE 1 ==========
     public static void useCase1() {
-
         System.out.println("=== Train Consist Management App ===");
 
         List<String> trainConsist = new ArrayList<>();
 
         System.out.println("Train consist initialized.");
         System.out.println("Initial bogie count: " + trainConsist.size());
-
         System.out.println("Program continues...\n");
     }
 
     // ========== USE CASE 2 ==========
     public static void useCase2() {
-
         System.out.println("=== UC2: Passenger Bogie Management ===");
 
         List<String> passengerBogies = new ArrayList<>();
@@ -40,13 +37,11 @@ public class TrainConsistApp {
 
         System.out.println("Final bogie list:");
         System.out.println(passengerBogies);
-
         System.out.println("Program continues...\n");
     }
 
     // ========== USE CASE 3 ==========
     public static void useCase3() {
-
         System.out.println("=== UC3: Unique Bogie ID Tracking ===");
 
         Set<String> bogieIds = new HashSet<>();
@@ -54,20 +49,18 @@ public class TrainConsistApp {
         bogieIds.add("BG101");
         bogieIds.add("BG102");
         bogieIds.add("BG103");
-        bogieIds.add("BG101"); // duplicate
-        bogieIds.add("BG102"); // duplicate
+        bogieIds.add("BG101");
+        bogieIds.add("BG102");
 
         System.out.println("Unique Bogie IDs:");
         System.out.println(bogieIds);
 
         System.out.println("Total unique bogies: " + bogieIds.size());
-
         System.out.println("Program continues...\n");
     }
 
     // ========== USE CASE 4 ==========
     public static void useCase4() {
-
         System.out.println("=== UC4: Ordered Train Consist (LinkedList) ===");
 
         LinkedList<String> train = new LinkedList<>();
@@ -94,32 +87,47 @@ public class TrainConsistApp {
 
         System.out.println("Final ordered train consist:");
         System.out.println(train);
-
         System.out.println("Program continues...\n");
     }
 
-    // ========== USE CASE 5: LinkedHashSet ==========
+    // ========== USE CASE 5 ==========
     public static void useCase5() {
-
         System.out.println("=== UC5: Train Formation using LinkedHashSet ===");
 
-        // Create LinkedHashSet (order + uniqueness)
         Set<String> trainFormation = new LinkedHashSet<>();
 
-        // Add bogies
         trainFormation.add("Engine");
         trainFormation.add("Sleeper");
         trainFormation.add("Cargo");
         trainFormation.add("Guard");
+        trainFormation.add("Sleeper"); // duplicate ignored
 
-        // Attempt duplicate
-        trainFormation.add("Sleeper"); // ignored automatically
-
-        // Display final formation
-        System.out.println("Final Train Formation (Insertion Order Preserved):");
+        System.out.println("Final Train Formation:");
         System.out.println(trainFormation);
 
         System.out.println("Total bogies: " + trainFormation.size());
+        System.out.println("Program continues...\n");
+    }
+
+    // ========== USE CASE 6: HashMap ==========
+    public static void useCase6() {
+
+        System.out.println("=== UC6: Bogie Capacity Mapping ===");
+
+        // Create HashMap
+        Map<String, Integer> bogieCapacity = new HashMap<>();
+
+        // Add bogie-capacity pairs
+        bogieCapacity.put("Sleeper", 72);
+        bogieCapacity.put("AC Chair", 50);
+        bogieCapacity.put("First Class", 24);
+
+        // Display all entries
+        System.out.println("Bogie Capacity Details:");
+
+        for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
+            System.out.println(entry.getKey() + " -> Capacity: " + entry.getValue());
+        }
 
         System.out.println("Program continues...\n");
     }
@@ -129,6 +137,7 @@ public class TrainConsistApp {
         useCase2();
         useCase3();
         useCase4();
-        useCase5(); // Added UC5
+        useCase5();
+        useCase6(); // Added UC6
     }
 }
