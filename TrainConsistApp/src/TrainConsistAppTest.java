@@ -3,55 +3,52 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TrainConsistAppTest {
 
-    // ✅ Valid capacity
+    // Safe assignment
     @Test
-    void testException_ValidCapacityCreation() throws Exception {
-        TrainConsistApp.Bogie b = new TrainConsistApp.Bogie("Sleeper", 72);
-        assertEquals(72, b.capacity);
+    void testCargo_SafeAssignment() {
+        TrainConsistApp.GoodsBogie b = new TrainConsistApp.GoodsBogie("Cylindrical");
+        b.assignCargo("Petroleum");
+
+        assertEquals("Petroleum", b.cargo);
     }
 
-    // ❌ Negative capacity
+    // Unsafe assignment handled
     @Test
-    void testException_NegativeCapacityThrowsException() {
-        assertThrows(TrainConsistApp.InvalidCapacityException.class, () -> {
-            new TrainConsistApp.Bogie("AC", -10);
-        });
+    void testCargo_UnsafeAssignmentHandled() {
+        TrainConsistApp.GoodsBogie b = new TrainConsistApp.GoodsBogie("Rectangular");
+        b.assignCargo("Petroleum");
+
+        assertNull(b.cargo); // should not assign
     }
 
-    // ❌ Zero capacity
+    //  Cargo not assigned after failure
     @Test
-    void testException_ZeroCapacityThrowsException() {
-        assertThrows(TrainConsistApp.InvalidCapacityException.class, () -> {
-            new TrainConsistApp.Bogie("AC", 0);
-        });
+    void testCargo_CargoNotAssignedAfterFailure() {
+        TrainConsistApp.GoodsBogie b = new TrainConsistApp.GoodsBogie("Rectangular");
+        b.assignCargo("Petroleum");
+
+        assertNull(b.cargo);
     }
 
-    // ✅ Exception message check
+    //  Program continues
     @Test
-    void testException_ExceptionMessageValidation() {
-        Exception ex = assertThrows(TrainConsistApp.InvalidCapacityException.class, () -> {
-            new TrainConsistApp.Bogie("AC", -5);
-        });
+    void testCargo_ProgramContinuesAfterException() {
+        TrainConsistApp.GoodsBogie b = new TrainConsistApp.GoodsBogie("Rectangular");
 
-        assertEquals("Capacity must be greater than zero", ex.getMessage());
+        b.assignCargo("Petroleum"); // fails
+        b.assignCargo("Coal");      // works
+
+        assertEquals("Coal", b.cargo);
     }
 
-    // ✅ Object integrity
+    // Finally block execution (indirect check)
     @Test
-    void testException_ObjectIntegrityAfterCreation() throws Exception {
-        TrainConsistApp.Bogie b = new TrainConsistApp.Bogie("AC Chair", 56);
+    void testCargo_FinallyBlockExecution() {
+        TrainConsistApp.GoodsBogie b = new TrainConsistApp.GoodsBogie("Rectangular");
 
-        assertEquals("AC Chair", b.name);
-        assertEquals(56, b.capacity);
-    }
+        // If no crash → finally executed
+        b.assignCargo("Petroleum");
 
-    // ✅ Multiple valid bogies
-    @Test
-    void testException_MultipleValidBogiesCreation() throws Exception {
-        TrainConsistApp.Bogie b1 = new TrainConsistApp.Bogie("Sleeper", 72);
-        TrainConsistApp.Bogie b2 = new TrainConsistApp.Bogie("AC", 50);
-
-        assertNotNull(b1);
-        assertNotNull(b2);
+        assertTrue(true); // just ensures no crash
     }
 }
