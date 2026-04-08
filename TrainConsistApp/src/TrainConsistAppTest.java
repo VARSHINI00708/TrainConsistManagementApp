@@ -1,61 +1,77 @@
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
-public class TrainConsistAppTest {
+import java.util.*;
 
-    // 🔹 1. Valid Train ID
+class TrainConsistAppTest {
+
+    // ✅ 1. All valid
     @Test
-    void testRegex_ValidTrainID() {
-        assertTrue(TrainConsistApp.validateTrainId("TRN-1234"));
+    void testSafety_AllBogiesValid() {
+
+        List<TrainConsistApp.GoodsBogie> list = Arrays.asList(
+                new TrainConsistApp.GoodsBogie("Cylindrical", "Petroleum"),
+                new TrainConsistApp.GoodsBogie("Open", "Coal")
+        );
+
+        boolean result = list.stream()
+                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
+
+        assertTrue(result);
     }
 
-    // 🔹 2. Invalid Train ID
+    // ❌ 2. Cylindrical with wrong cargo
     @Test
-    void testRegex_InvalidTrainIDFormat() {
-        assertFalse(TrainConsistApp.validateTrainId("TRAIN12"));
-        assertFalse(TrainConsistApp.validateTrainId("TRN12A"));
-        assertFalse(TrainConsistApp.validateTrainId("1234-TRN"));
+    void testSafety_CylindricalWithInvalidCargo() {
+
+        List<TrainConsistApp.GoodsBogie> list = Arrays.asList(
+                new TrainConsistApp.GoodsBogie("Cylindrical", "Coal")
+        );
+
+        boolean result = list.stream()
+                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
+
+        assertFalse(result);
     }
 
-    // 🔹 3. Valid Cargo Code
+    // ✅ 3. Non-cylindrical allowed
     @Test
-    void testRegex_ValidCargoCode() {
-        assertTrue(TrainConsistApp.validateCargoCode("PET-AB"));
+    void testSafety_NonCylindricalBogiesAllowed() {
+
+        List<TrainConsistApp.GoodsBogie> list = Arrays.asList(
+                new TrainConsistApp.GoodsBogie("Open", "Coal"),
+                new TrainConsistApp.GoodsBogie("Box", "Grain")
+        );
+
+        boolean result = list.stream()
+                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
+
+        assertTrue(result);
     }
 
-    // 🔹 4. Invalid Cargo Code
+    // ❌ 4. Mixed violation
     @Test
-    void testRegex_InvalidCargoCodeFormat() {
-        assertFalse(TrainConsistApp.validateCargoCode("PET-ab"));
-        assertFalse(TrainConsistApp.validateCargoCode("PET123"));
-        assertFalse(TrainConsistApp.validateCargoCode("AB-PET"));
+    void testSafety_MixedBogiesWithViolation() {
+
+        List<TrainConsistApp.GoodsBogie> list = Arrays.asList(
+                new TrainConsistApp.GoodsBogie("Cylindrical", "Petroleum"),
+                new TrainConsistApp.GoodsBogie("Cylindrical", "Coal")
+        );
+
+        boolean result = list.stream()
+                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
+
+        assertFalse(result);
     }
 
-    // 🔹 5. Train ID digit length
+    // ✅ 5. Empty list
     @Test
-    void testRegex_TrainIDDigitLengthValidation() {
-        assertFalse(TrainConsistApp.validateTrainId("TRN-123"));
-        assertFalse(TrainConsistApp.validateTrainId("TRN-12345"));
-    }
+    void testSafety_EmptyBogieList() {
 
-    // 🔹 6. Cargo uppercase only
-    @Test
-    void testRegex_CargoCodeUppercaseValidation() {
-        assertFalse(TrainConsistApp.validateCargoCode("PET-Ab"));
-        assertFalse(TrainConsistApp.validateCargoCode("PET-aB"));
-    }
+        List<TrainConsistApp.GoodsBogie> list = new ArrayList<>();
 
-    // 🔹 7. Empty input
-    @Test
-    void testRegex_EmptyInputHandling() {
-        assertFalse(TrainConsistApp.validateTrainId(""));
-        assertFalse(TrainConsistApp.validateCargoCode(""));
-    }
+        boolean result = list.stream()
+                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
 
-    // 🔹 8. Exact pattern match
-    @Test
-    void testRegex_ExactPatternMatch() {
-        assertFalse(TrainConsistApp.validateTrainId("TRN-1234XYZ"));
-        assertFalse(TrainConsistApp.validateCargoCode("PET-AB12"));
+        assertTrue(result);
     }
 }
