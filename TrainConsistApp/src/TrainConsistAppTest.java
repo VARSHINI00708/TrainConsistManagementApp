@@ -1,97 +1,57 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.*;
 
 class TrainConsistAppTest {
 
-    // 🔹 1. Loop filtering
+    // ✅ Valid capacity
     @Test
-    void testLoopFilteringLogic() {
-
-        List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("A", 70),
-                new TrainConsistApp.Bogie("B", 50)
-        );
-
-        List<TrainConsistApp.Bogie> result = new ArrayList<>();
-
-        for (TrainConsistApp.Bogie b : list) {
-            if (b.capacity > 60) {
-                result.add(b);
-            }
-        }
-
-        assertEquals(1, result.size());
+    void testException_ValidCapacityCreation() throws Exception {
+        TrainConsistApp.Bogie b = new TrainConsistApp.Bogie("Sleeper", 72);
+        assertEquals(72, b.capacity);
     }
 
-    // 🔹 2. Stream filtering
+    // ❌ Negative capacity
     @Test
-    void testStreamFilteringLogic() {
-
-        List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("A", 70),
-                new TrainConsistApp.Bogie("B", 50)
-        );
-
-        List<TrainConsistApp.Bogie> result =
-                list.stream().filter(b -> b.capacity > 60).toList();
-
-        assertEquals(1, result.size());
+    void testException_NegativeCapacityThrowsException() {
+        assertThrows(TrainConsistApp.InvalidCapacityException.class, () -> {
+            new TrainConsistApp.Bogie("AC", -10);
+        });
     }
 
-    // 🔹 3. Results match
+    // ❌ Zero capacity
     @Test
-    void testLoopAndStreamResultsMatch() {
-
-        List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("A", 70),
-                new TrainConsistApp.Bogie("B", 80),
-                new TrainConsistApp.Bogie("C", 40)
-        );
-
-        List<TrainConsistApp.Bogie> loopResult = new ArrayList<>();
-        for (TrainConsistApp.Bogie b : list) {
-            if (b.capacity > 60) {
-                loopResult.add(b);
-            }
-        }
-
-        List<TrainConsistApp.Bogie> streamResult =
-                list.stream().filter(b -> b.capacity > 60).toList();
-
-        assertEquals(loopResult.size(), streamResult.size());
+    void testException_ZeroCapacityThrowsException() {
+        assertThrows(TrainConsistApp.InvalidCapacityException.class, () -> {
+            new TrainConsistApp.Bogie("AC", 0);
+        });
     }
 
-    // 🔹 4. Execution time > 0
+    // ✅ Exception message check
     @Test
-    void testExecutionTimeMeasurement() {
+    void testException_ExceptionMessageValidation() {
+        Exception ex = assertThrows(TrainConsistApp.InvalidCapacityException.class, () -> {
+            new TrainConsistApp.Bogie("AC", -5);
+        });
 
-        long start = System.nanoTime();
-
-        // dummy operation
-        int sum = 0;
-        for (int i = 0; i < 1000; i++) sum += i;
-
-        long end = System.nanoTime();
-
-        long time = end - start;
-
-        assertTrue(time > 0);
+        assertEquals("Capacity must be greater than zero", ex.getMessage());
     }
 
-    // 🔹 5. Large dataset
+    // ✅ Object integrity
     @Test
-    void testLargeDatasetProcessing() {
+    void testException_ObjectIntegrityAfterCreation() throws Exception {
+        TrainConsistApp.Bogie b = new TrainConsistApp.Bogie("AC Chair", 56);
 
-        List<TrainConsistApp.Bogie> list = new ArrayList<>();
+        assertEquals("AC Chair", b.name);
+        assertEquals(56, b.capacity);
+    }
 
-        for (int i = 0; i < 10000; i++) {
-            list.add(new TrainConsistApp.Bogie("B" + i, i % 100));
-        }
+    // ✅ Multiple valid bogies
+    @Test
+    void testException_MultipleValidBogiesCreation() throws Exception {
+        TrainConsistApp.Bogie b1 = new TrainConsistApp.Bogie("Sleeper", 72);
+        TrainConsistApp.Bogie b2 = new TrainConsistApp.Bogie("AC", 50);
 
-        List<TrainConsistApp.Bogie> result =
-                list.stream().filter(b -> b.capacity > 60).toList();
-
-        assertTrue(result.size() > 0);
+        assertNotNull(b1);
+        assertNotNull(b2);
     }
 }
