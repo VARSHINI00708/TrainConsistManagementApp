@@ -2,120 +2,116 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 class TrainConsistAppTest {
 
+    // 🔹 1. Total calculation
     @Test
-    void testGrouping_BogiesGroupedByType() {
+    void testReduce_TotalSeatCalculation() {
 
         List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("Sleeper", 72),
-                new TrainConsistApp.Bogie("Sleeper", 70)
+                new TrainConsistApp.Bogie("A", 50),
+                new TrainConsistApp.Bogie("B", 30)
         );
 
-        Map<String, List<TrainConsistApp.Bogie>> result =
-                list.stream().collect(Collectors.groupingBy(b -> b.name));
+        int result = list.stream()
+                .map(b -> b.capacity)
+                .reduce(0, Integer::sum);
 
-        assertTrue(result.containsKey("Sleeper"));
-        assertEquals(2, result.get("Sleeper").size());
+        assertEquals(80, result);
     }
 
+    // 🔹 2. Multiple bogies
     @Test
-    void testGrouping_MultipleBogiesInSameGroup() {
+    void testReduce_MultipleBogiesAggregation() {
 
         List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("AC", 50),
-                new TrainConsistApp.Bogie("AC", 60)
+                new TrainConsistApp.Bogie("A", 10),
+                new TrainConsistApp.Bogie("B", 20),
+                new TrainConsistApp.Bogie("C", 30)
         );
 
-        Map<String, List<TrainConsistApp.Bogie>> result =
-                list.stream().collect(Collectors.groupingBy(b -> b.name));
+        int result = list.stream()
+                .map(b -> b.capacity)
+                .reduce(0, Integer::sum);
 
-        assertEquals(2, result.get("AC").size());
+        assertEquals(60, result);
     }
 
+    // 🔹 3. Single bogie
     @Test
-    void testGrouping_DifferentBogieTypes() {
+    void testReduce_SingleBogieCapacity() {
 
         List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("Sleeper", 72),
-                new TrainConsistApp.Bogie("AC", 50)
+                new TrainConsistApp.Bogie("A", 40)
         );
 
-        Map<String, List<TrainConsistApp.Bogie>> result =
-                list.stream().collect(Collectors.groupingBy(b -> b.name));
+        int result = list.stream()
+                .map(b -> b.capacity)
+                .reduce(0, Integer::sum);
 
-        assertEquals(2, result.size());
+        assertEquals(40, result);
     }
 
+    // 🔹 4. Empty list
     @Test
-    void testGrouping_EmptyBogieList() {
+    void testReduce_EmptyBogieList() {
 
         List<TrainConsistApp.Bogie> list = new ArrayList<>();
 
-        Map<String, List<TrainConsistApp.Bogie>> result =
-                list.stream().collect(Collectors.groupingBy(b -> b.name));
+        int result = list.stream()
+                .map(b -> b.capacity)
+                .reduce(0, Integer::sum);
 
-        assertTrue(result.isEmpty());
+        assertEquals(0, result);
     }
 
+    // 🔹 5. Correct extraction
     @Test
-    void testGrouping_SingleBogieCategory() {
+    void testReduce_CorrectCapacityExtraction() {
 
         List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("Sleeper", 72)
+                new TrainConsistApp.Bogie("A", 15),
+                new TrainConsistApp.Bogie("B", 25)
         );
 
-        Map<String, List<TrainConsistApp.Bogie>> result =
-                list.stream().collect(Collectors.groupingBy(b -> b.name));
+        int result = list.stream()
+                .map(b -> b.capacity)
+                .reduce(0, Integer::sum);
 
-        assertEquals(1, result.size());
-        assertTrue(result.containsKey("Sleeper"));
+        assertEquals(40, result);
     }
 
+    // 🔹 6. All bogies included
     @Test
-    void testGrouping_MapContainsCorrectKeys() {
+    void testReduce_AllBogiesIncluded() {
 
         List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("Sleeper", 72),
-                new TrainConsistApp.Bogie("AC Chair", 50),
-                new TrainConsistApp.Bogie("First Class", 30)
+                new TrainConsistApp.Bogie("A", 5),
+                new TrainConsistApp.Bogie("B", 15),
+                new TrainConsistApp.Bogie("C", 20)
         );
 
-        Map<String, List<TrainConsistApp.Bogie>> result =
-                list.stream().collect(Collectors.groupingBy(b -> b.name));
+        int result = list.stream()
+                .map(b -> b.capacity)
+                .reduce(0, Integer::sum);
 
-        assertTrue(result.containsKey("Sleeper"));
-        assertTrue(result.containsKey("AC Chair"));
-        assertTrue(result.containsKey("First Class"));
+        assertEquals(40, result);
     }
 
+    // 🔹 7. Original list unchanged
     @Test
-    void testGrouping_GroupSizeValidation() {
-
-        List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("Sleeper", 72),
-                new TrainConsistApp.Bogie("Sleeper", 70),
-                new TrainConsistApp.Bogie("Sleeper", 68)
-        );
-
-        Map<String, List<TrainConsistApp.Bogie>> result =
-                list.stream().collect(Collectors.groupingBy(b -> b.name));
-
-        assertEquals(3, result.get("Sleeper").size());
-    }
-
-    @Test
-    void testGrouping_OriginalListUnchanged() {
+    void testReduce_OriginalListUnchanged() {
 
         List<TrainConsistApp.Bogie> list = new ArrayList<>();
-        list.add(new TrainConsistApp.Bogie("Sleeper", 72));
-        list.add(new TrainConsistApp.Bogie("AC", 50));
+        list.add(new TrainConsistApp.Bogie("A", 50));
+        list.add(new TrainConsistApp.Bogie("B", 30));
 
         int originalSize = list.size();
 
-        list.stream().collect(Collectors.groupingBy(b -> b.name));
+        list.stream()
+                .map(b -> b.capacity)
+                .reduce(0, Integer::sum);
 
         assertEquals(originalSize, list.size());
     }
