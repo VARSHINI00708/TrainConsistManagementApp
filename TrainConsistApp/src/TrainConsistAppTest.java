@@ -6,135 +6,116 @@ import java.util.stream.Collectors;
 
 class TrainConsistAppTest {
 
-    // 🔹 1. Capacity > Threshold
     @Test
-    void testFilter_CapacityGreaterThanThreshold() {
+    void testGrouping_BogiesGroupedByType() {
+
+        List<TrainConsistApp.Bogie> list = Arrays.asList(
+                new TrainConsistApp.Bogie("Sleeper", 72),
+                new TrainConsistApp.Bogie("Sleeper", 70)
+        );
+
+        Map<String, List<TrainConsistApp.Bogie>> result =
+                list.stream().collect(Collectors.groupingBy(b -> b.name));
+
+        assertTrue(result.containsKey("Sleeper"));
+        assertEquals(2, result.get("Sleeper").size());
+    }
+
+    @Test
+    void testGrouping_MultipleBogiesInSameGroup() {
+
+        List<TrainConsistApp.Bogie> list = Arrays.asList(
+                new TrainConsistApp.Bogie("AC", 50),
+                new TrainConsistApp.Bogie("AC", 60)
+        );
+
+        Map<String, List<TrainConsistApp.Bogie>> result =
+                list.stream().collect(Collectors.groupingBy(b -> b.name));
+
+        assertEquals(2, result.get("AC").size());
+    }
+
+    @Test
+    void testGrouping_DifferentBogieTypes() {
+
+        List<TrainConsistApp.Bogie> list = Arrays.asList(
+                new TrainConsistApp.Bogie("Sleeper", 72),
+                new TrainConsistApp.Bogie("AC", 50)
+        );
+
+        Map<String, List<TrainConsistApp.Bogie>> result =
+                list.stream().collect(Collectors.groupingBy(b -> b.name));
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void testGrouping_EmptyBogieList() {
 
         List<TrainConsistApp.Bogie> list = new ArrayList<>();
-        list.add(new TrainConsistApp.Bogie("A", 80));
-        list.add(new TrainConsistApp.Bogie("B", 50));
 
-        List<TrainConsistApp.Bogie> result =
-                list.stream()
-                        .filter(b -> b.capacity > 70)
-                        .collect(Collectors.toList());
+        Map<String, List<TrainConsistApp.Bogie>> result =
+                list.stream().collect(Collectors.groupingBy(b -> b.name));
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testGrouping_SingleBogieCategory() {
+
+        List<TrainConsistApp.Bogie> list = Arrays.asList(
+                new TrainConsistApp.Bogie("Sleeper", 72)
+        );
+
+        Map<String, List<TrainConsistApp.Bogie>> result =
+                list.stream().collect(Collectors.groupingBy(b -> b.name));
 
         assertEquals(1, result.size());
-        assertEquals(80, result.get(0).capacity);
+        assertTrue(result.containsKey("Sleeper"));
     }
 
-    // 🔹 2. Equal to Threshold
     @Test
-    void testFilter_CapacityEqualToThreshold() {
+    void testGrouping_MapContainsCorrectKeys() {
 
         List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("A", 70)
+                new TrainConsistApp.Bogie("Sleeper", 72),
+                new TrainConsistApp.Bogie("AC Chair", 50),
+                new TrainConsistApp.Bogie("First Class", 30)
         );
 
-        List<TrainConsistApp.Bogie> result =
-                list.stream()
-                        .filter(b -> b.capacity > 70)
-                        .collect(Collectors.toList());
+        Map<String, List<TrainConsistApp.Bogie>> result =
+                list.stream().collect(Collectors.groupingBy(b -> b.name));
 
-        assertTrue(result.isEmpty());
+        assertTrue(result.containsKey("Sleeper"));
+        assertTrue(result.containsKey("AC Chair"));
+        assertTrue(result.containsKey("First Class"));
     }
 
-    // 🔹 3. Less than Threshold
     @Test
-    void testFilter_CapacityLessThanThreshold() {
+    void testGrouping_GroupSizeValidation() {
 
         List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("A", 20),
-                new TrainConsistApp.Bogie("B", 30)
+                new TrainConsistApp.Bogie("Sleeper", 72),
+                new TrainConsistApp.Bogie("Sleeper", 70),
+                new TrainConsistApp.Bogie("Sleeper", 68)
         );
 
-        List<TrainConsistApp.Bogie> result =
-                list.stream()
-                        .filter(b -> b.capacity > 70)
-                        .collect(Collectors.toList());
+        Map<String, List<TrainConsistApp.Bogie>> result =
+                list.stream().collect(Collectors.groupingBy(b -> b.name));
 
-        assertTrue(result.isEmpty());
+        assertEquals(3, result.get("Sleeper").size());
     }
 
-    // 🔹 4. Multiple Matching
     @Test
-    void testFilter_MultipleBogiesMatching() {
-
-        List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("A", 80),
-                new TrainConsistApp.Bogie("B", 90),
-                new TrainConsistApp.Bogie("C", 50)
-        );
-
-        List<TrainConsistApp.Bogie> result =
-                list.stream()
-                        .filter(b -> b.capacity > 70)
-                        .collect(Collectors.toList());
-
-        assertEquals(2, result.size());
-    }
-
-    // 🔹 5. No Matching
-    @Test
-    void testFilter_NoBogiesMatching() {
-
-        List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("A", 10),
-                new TrainConsistApp.Bogie("B", 20)
-        );
-
-        List<TrainConsistApp.Bogie> result =
-                list.stream()
-                        .filter(b -> b.capacity > 70)
-                        .collect(Collectors.toList());
-
-        assertTrue(result.isEmpty());
-    }
-
-    // 🔹 6. All Matching
-    @Test
-    void testFilter_AllBogiesMatching() {
-
-        List<TrainConsistApp.Bogie> list = Arrays.asList(
-                new TrainConsistApp.Bogie("A", 80),
-                new TrainConsistApp.Bogie("B", 90)
-        );
-
-        List<TrainConsistApp.Bogie> result =
-                list.stream()
-                        .filter(b -> b.capacity > 70)
-                        .collect(Collectors.toList());
-
-        assertEquals(2, result.size());
-    }
-
-    // 🔹 7. Empty List
-    @Test
-    void testFilter_EmptyBogieList() {
+    void testGrouping_OriginalListUnchanged() {
 
         List<TrainConsistApp.Bogie> list = new ArrayList<>();
-
-        List<TrainConsistApp.Bogie> result =
-                list.stream()
-                        .filter(b -> b.capacity > 70)
-                        .collect(Collectors.toList());
-
-        assertTrue(result.isEmpty());
-    }
-
-    // 🔹 8. Original List Unchanged
-    @Test
-    void testFilter_OriginalListUnchanged() {
-
-        List<TrainConsistApp.Bogie> list = new ArrayList<>();
-        list.add(new TrainConsistApp.Bogie("A", 80));
-        list.add(new TrainConsistApp.Bogie("B", 40));
+        list.add(new TrainConsistApp.Bogie("Sleeper", 72));
+        list.add(new TrainConsistApp.Bogie("AC", 50));
 
         int originalSize = list.size();
 
-        list.stream()
-                .filter(b -> b.capacity > 50)
-                .collect(Collectors.toList());
+        list.stream().collect(Collectors.groupingBy(b -> b.name));
 
         assertEquals(originalSize, list.size());
     }
