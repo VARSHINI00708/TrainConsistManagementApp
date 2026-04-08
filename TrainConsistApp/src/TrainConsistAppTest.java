@@ -4,74 +4,94 @@ import java.util.*;
 
 class TrainConsistAppTest {
 
-    // ✅ 1. All valid
+    // 🔹 1. Loop filtering
     @Test
-    void testSafety_AllBogiesValid() {
+    void testLoopFilteringLogic() {
 
-        List<TrainConsistApp.GoodsBogie> list = Arrays.asList(
-                new TrainConsistApp.GoodsBogie("Cylindrical", "Petroleum"),
-                new TrainConsistApp.GoodsBogie("Open", "Coal")
+        List<TrainConsistApp.Bogie> list = Arrays.asList(
+                new TrainConsistApp.Bogie("A", 70),
+                new TrainConsistApp.Bogie("B", 50)
         );
 
-        boolean result = list.stream()
-                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
+        List<TrainConsistApp.Bogie> result = new ArrayList<>();
 
-        assertTrue(result);
+        for (TrainConsistApp.Bogie b : list) {
+            if (b.capacity > 60) {
+                result.add(b);
+            }
+        }
+
+        assertEquals(1, result.size());
     }
 
-    // ❌ 2. Cylindrical with wrong cargo
+    // 🔹 2. Stream filtering
     @Test
-    void testSafety_CylindricalWithInvalidCargo() {
+    void testStreamFilteringLogic() {
 
-        List<TrainConsistApp.GoodsBogie> list = Arrays.asList(
-                new TrainConsistApp.GoodsBogie("Cylindrical", "Coal")
+        List<TrainConsistApp.Bogie> list = Arrays.asList(
+                new TrainConsistApp.Bogie("A", 70),
+                new TrainConsistApp.Bogie("B", 50)
         );
 
-        boolean result = list.stream()
-                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
+        List<TrainConsistApp.Bogie> result =
+                list.stream().filter(b -> b.capacity > 60).toList();
 
-        assertFalse(result);
+        assertEquals(1, result.size());
     }
 
-    // ✅ 3. Non-cylindrical allowed
+    // 🔹 3. Results match
     @Test
-    void testSafety_NonCylindricalBogiesAllowed() {
+    void testLoopAndStreamResultsMatch() {
 
-        List<TrainConsistApp.GoodsBogie> list = Arrays.asList(
-                new TrainConsistApp.GoodsBogie("Open", "Coal"),
-                new TrainConsistApp.GoodsBogie("Box", "Grain")
+        List<TrainConsistApp.Bogie> list = Arrays.asList(
+                new TrainConsistApp.Bogie("A", 70),
+                new TrainConsistApp.Bogie("B", 80),
+                new TrainConsistApp.Bogie("C", 40)
         );
 
-        boolean result = list.stream()
-                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
+        List<TrainConsistApp.Bogie> loopResult = new ArrayList<>();
+        for (TrainConsistApp.Bogie b : list) {
+            if (b.capacity > 60) {
+                loopResult.add(b);
+            }
+        }
 
-        assertTrue(result);
+        List<TrainConsistApp.Bogie> streamResult =
+                list.stream().filter(b -> b.capacity > 60).toList();
+
+        assertEquals(loopResult.size(), streamResult.size());
     }
 
-    // ❌ 4. Mixed violation
+    // 🔹 4. Execution time > 0
     @Test
-    void testSafety_MixedBogiesWithViolation() {
+    void testExecutionTimeMeasurement() {
 
-        List<TrainConsistApp.GoodsBogie> list = Arrays.asList(
-                new TrainConsistApp.GoodsBogie("Cylindrical", "Petroleum"),
-                new TrainConsistApp.GoodsBogie("Cylindrical", "Coal")
-        );
+        long start = System.nanoTime();
 
-        boolean result = list.stream()
-                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
+        // dummy operation
+        int sum = 0;
+        for (int i = 0; i < 1000; i++) sum += i;
 
-        assertFalse(result);
+        long end = System.nanoTime();
+
+        long time = end - start;
+
+        assertTrue(time > 0);
     }
 
-    // ✅ 5. Empty list
+    // 🔹 5. Large dataset
     @Test
-    void testSafety_EmptyBogieList() {
+    void testLargeDatasetProcessing() {
 
-        List<TrainConsistApp.GoodsBogie> list = new ArrayList<>();
+        List<TrainConsistApp.Bogie> list = new ArrayList<>();
 
-        boolean result = list.stream()
-                .allMatch(b -> !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum"));
+        for (int i = 0; i < 10000; i++) {
+            list.add(new TrainConsistApp.Bogie("B" + i, i % 100));
+        }
 
-        assertTrue(result);
+        List<TrainConsistApp.Bogie> result =
+                list.stream().filter(b -> b.capacity > 60).toList();
+
+        assertTrue(result.size() > 0);
     }
 }
